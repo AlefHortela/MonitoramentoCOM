@@ -25,11 +25,11 @@ namespace TestConnect
         public TestConnect()
         {
             InitializeComponent();
-            InitializePorts();
-            timer = new Timer();
-            timer.Interval = 2000;
-            timer.Tick += Timer_Tick;
-            timer.Enabled = true;
+            //InitializePorts();
+            //timer = new Timer();
+            //timer.Interval = 2000;
+            //timer.Tick += Timer_Tick;
+            //timer.Enabled = true;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
