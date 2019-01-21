@@ -58,10 +58,10 @@ namespace TestConnect
             }
             else
             {
-                txtBaudRateUSB.AppendText($"Tamanho do pacote em caracteres {packTotalSizeUSB}");
+                txtBaudRateUSB.AppendText($"Bits por segundo {packTotalSizeUSB}");
                 txtBaudRateUSB.AppendText("\n");
                 packTotalSizeUSB = 0;
-                txtBaudRateUART.AppendText($"Tamanho do pacote em caracteres {packTotalSizeUART}");
+                txtBaudRateUART.AppendText($"Bits por segundo {packTotalSizeUART}");
                 txtBaudRateUART.AppendText("\n");
                 packTotalSizeUART = 0;
             }
@@ -103,9 +103,8 @@ namespace TestConnect
         }
 
         private void PortRight_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            this.SetTextRight(portRight.ReadExisting());
-            //this.SetTextRight(portRight.ReadLine());
+        {            
+            this.SetTextRight(portRight.ReadExisting());                      
         }
 
         private void SetTextRight(string data)
@@ -117,17 +116,20 @@ namespace TestConnect
             }
             else
             {
-                packTotalSizeUART += ASCIIEncoding.Unicode.GetByteCount(data) * 8; 
-                txtRight.AppendText($"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {data}");
-                txtRight.AppendText("\n");
-                txtRight.ScrollToCaret();
+                packTotalSizeUART += ASCIIEncoding.ASCII.GetByteCount(data) * 8;
+                if (chkDataUART.Checked)
+                {
+                    txtRight.AppendText($"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {data}");
+                    txtRight.AppendText("\n");
+                    txtRight.ScrollToCaret();
+                }
             }
         }
 
         private void PortLeft_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            this.SetTextLeft(portLeft.ReadExisting());
-            //this.SetTextLeft(portLeft.ReadLine());
+            
+            this.SetTextLeft(portLeft.ReadExisting());            
         }
 
         public void SetTextLeft(string data)
@@ -139,10 +141,14 @@ namespace TestConnect
             }
             else
             {
-                packTotalSizeUSB += ASCIIEncoding.Unicode.GetByteCount(data) * 8;
-                txtLeft.AppendText($"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {data}");
-                txtLeft.AppendText("\n");
-                txtLeft.ScrollToCaret();
+                packTotalSizeUSB += ASCIIEncoding.ASCII.GetByteCount(data) * 8;
+
+                if (chkDataUSB.Checked)
+                {
+                    txtLeft.AppendText($"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {data}");
+                    txtLeft.AppendText("\n");
+                    txtLeft.ScrollToCaret();
+                }
             }
 
         }
