@@ -39,17 +39,17 @@ namespace TestConnect
 
         private void InitializeText()
         {
-            txtLeft.Width = this.Width / 2 - 15;
-            txtLeft.Left = 0;
-            txtLeft.Top = 50;
-            txtLeft.Height = this.Height - 50;
-            lblLeft.Left = 50; 
+            //txtLeft.Width = this.Width / 2 - 15;
+            //txtLeft.Left = 0;
+            //txtLeft.Top = 50;
+            //txtLeft.Height = this.Height - 50;
+            //lblLeft.Left = 50; 
 
-            txtRight.Width = this.Width / 2;
-            txtRight.Left = txtLeft.Width;
-            txtRight.Top = 50;
-            txtRight.Height = this.Height - 50;
-            lblRight.Left = txtLeft.Width + 50;
+            //txtRight.Width = this.Width / 2;
+            //txtRight.Left = txtLeft.Width;
+            //txtRight.Top = 50;
+            //txtRight.Height = this.Height - 50;
+            //lblRight.Left = txtLeft.Width + 50;
         }
 
         private void InitializePorts()
