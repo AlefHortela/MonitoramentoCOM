@@ -16,20 +16,55 @@ namespace TestConnect
 
         SerialPort portLeft;
         SerialPort portRight;
-        Timer timer;
+        Timer timerConnection;
+        Timer timerPackage;
+        int packTotalSizeUSB;
+        int packTotalSizeUART;
 
         delegate void SetTextLeftCallBack(string data);
         delegate void SetTextRightCallBack(string data);
+        delegate void SetTextPackSize();
         delegate void SetLabelConnect();
 
         public TestConnect()
         {
             InitializeComponent();
-            //InitializePorts();
-            //timer = new Timer();
-            //timer.Interval = 2000;
-            //timer.Tick += Timer_Tick;
-            //timer.Enabled = true;
+        }
+
+        private void InitializeTimers()
+        {
+            timerConnection = new Timer();
+            timerConnection.Interval = 2000;
+            timerConnection.Tick += Timer_Tick;
+            timerConnection.Enabled = true;
+
+            timerPackage = new Timer();
+            timerPackage.Interval = 1000;
+            timerPackage.Tick += TimerPackage_Tick;
+            timerPackage.Enabled = true;
+        }
+
+        private void TimerPackage_Tick(object sender, EventArgs e)
+        {
+            this.SetTextPackageSize();
+        }
+
+        private void SetTextPackageSize()
+        {
+            if (txtBaudRateUSB.InvokeRequired)
+            {
+                SetTextPackSize set = new SetTextPackSize(SetTextPackageSize);
+                this.Invoke(set);
+            }
+            else
+            {
+                txtBaudRateUSB.AppendText($"Tamanho do pacote em caracteres {packTotalSizeUSB}");
+                txtBaudRateUSB.AppendText("\n");
+                packTotalSizeUSB = 0;
+                txtBaudRateUART.AppendText($"Tamanho do pacote em caracteres {packTotalSizeUART}");
+                txtBaudRateUART.AppendText("\n");
+                packTotalSizeUART = 0;
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -37,35 +72,25 @@ namespace TestConnect
             this.SetLabelConnected();
         }
 
-        private void InitializeText()
-        {
-            //txtLeft.Width = this.Width / 2 - 15;
-            //txtLeft.Left = 0;
-            //txtLeft.Top = 50;
-            //txtLeft.Height = this.Height - 50;
-            //lblLeft.Left = 50; 
-
-            //txtRight.Width = this.Width / 2;
-            //txtRight.Left = txtLeft.Width;
-            //txtRight.Top = 50;
-            //txtRight.Height = this.Height - 50;
-            //lblRight.Left = txtLeft.Width + 50;
-        }
-
-        private void InitializePorts()
+        private void InitializePortLeft()
         {
             var ascii = Encoding.ASCII;
             byte[] bytes = ascii.GetBytes(new[] { (char)3 });
-            byte[] bytes2 = ascii.GetBytes(new[] { (char)'\n' });
 
-            portLeft = new SerialPort("COM5", 9600, Parity.None, 8, StopBits.One);
+            portLeft = new SerialPort("COM5", 115200, Parity.None, 8, StopBits.One);
             portLeft.DataReceived += PortLeft_DataReceived;
             if (!portLeft.IsOpen)
             {
                 portLeft.Open();
                 lblLeftConnect.Text = "Connected";
             }
-            //portLeft.NewLine = Encoding.UTF8.GetString(bytes, 0, 1);
+            portLeft.NewLine = Encoding.UTF8.GetString(bytes, 0, 1);
+        }
+
+        private void InitializePortRight()
+        {
+            var ascii = Encoding.ASCII;
+            byte[] bytes = ascii.GetBytes(new[] { (char)3 });
 
             portRight = new SerialPort("COM3", 115200, Parity.None, 8, StopBits.One);
             portRight.DataReceived += PortRight_DataReceived;
@@ -74,7 +99,7 @@ namespace TestConnect
                 portRight.Open();
                 lblRightConnect.Text = "Connected";
             }
-            //portRight.NewLine = Encoding.UTF8.GetString(bytes2, 0, 1);
+            portRight.NewLine = Encoding.UTF8.GetString(bytes, 0, 1);
         }
 
         private void PortRight_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -92,6 +117,7 @@ namespace TestConnect
             }
             else
             {
+                packTotalSizeUART += ASCIIEncoding.Unicode.GetByteCount(data) * 8; 
                 txtRight.AppendText($"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {data}");
                 txtRight.AppendText("\n");
                 txtRight.ScrollToCaret();
@@ -113,6 +139,7 @@ namespace TestConnect
             }
             else
             {
+                packTotalSizeUSB += ASCIIEncoding.Unicode.GetByteCount(data) * 8;
                 txtLeft.AppendText($"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {data}");
                 txtLeft.AppendText("\n");
                 txtLeft.ScrollToCaret();
@@ -122,7 +149,7 @@ namespace TestConnect
 
         private void TestConnect_Shown(object sender, EventArgs e)
         {
-            InitializeText();
+            InitializeTimers();
         }
 
         public void SetLabelConnected()
@@ -134,41 +161,129 @@ namespace TestConnect
             }
             else
             {
-                if (portLeft.IsOpen)
+                if (chkLeft.Checked)
                 {
-                    lblLeftConnect.Text = "Connected";
+                    if (portLeft.IsOpen)
+                    {
+                        lblLeftConnect.Text = "Connected";
+                    }
+                    else
+                    {
+                        lblLeftConnect.Text = "Disconnected";
+                        try
+                        {
+                            portLeft.Close();
+                            portLeft.Open();
+                        }
+                        catch (Exception)
+                        {
+                            lblLeftConnect.Text = "Disconnected exception";
+                        }
+                    }
                 }
-                else
+                if (chkRight.Checked)
                 {
-                    lblLeftConnect.Text = "Disconnected";
-                    try
+                    if (portRight.IsOpen)
                     {
-                        portLeft.Close();
-                        portLeft.Open();
+                        lblRightConnect.Text = "Connected desd";
                     }
-                    catch (Exception)
+                    else
                     {
-                        lblLeftConnect.Text = "Disconnected exception";
+                        lblRightConnect.Text = "Disconnected";
+                        try
+                        {
+                            portRight.Close();
+                            portRight.Open();
+                        }
+                        catch (Exception)
+                        {
+                            lblRightConnect.Text = "Disconnected exception";
+                        }
                     }
                 }
+            }
+        }
 
-                if (portRight.IsOpen)
-                {
-                    lblRightConnect.Text = "Connected desd";
-                }
+        private void btnStartLeft_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (portLeft is null)
+                    InitializePortLeft();
                 else
                 {
-                    lblRightConnect.Text = "Disconnected";
-                    try
-                    {
-                        portRight.Close();
-                        portRight.Open();
-                    }
-                    catch (Exception)
-                    {
-                        lblRightConnect.Text = "Disconnected exception";
-                    }
+                    portLeft.DataReceived += PortLeft_DataReceived;
+                    portLeft.Open();
                 }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void btnStopLeft_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Threading.Thread CloseDown = new System.Threading.Thread(new System.Threading.ThreadStart(CloseSerialPortLeft)); 
+                CloseDown.Start(); 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void CloseSerialPortLeft()
+        {
+            try
+            {
+                portLeft.DataReceived -= PortLeft_DataReceived;
+                portLeft.DiscardInBuffer();
+                portLeft.DiscardOutBuffer();
+                portLeft.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btnStartRight_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (portRight is null)
+                    InitializePortRight();
+                else
+                {
+                    portRight.DataReceived += PortRight_DataReceived;
+                    portRight.Open();
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void btnStopRight_Click(object sender, EventArgs e)
+        {
+            System.Threading.Thread CloseDown = new System.Threading.Thread(new System.Threading.ThreadStart(CloseSerialPortRight));
+            CloseDown.Start();
+        }
+
+        private void CloseSerialPortRight()
+        {
+            try
+            {
+                portRight.DataReceived -= PortRight_DataReceived;
+                portRight.DiscardInBuffer();
+                portRight.DiscardOutBuffer();
+                portRight.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }
