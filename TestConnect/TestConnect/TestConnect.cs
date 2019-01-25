@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO.Ports;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TestConnect
@@ -57,12 +51,17 @@ namespace TestConnect
                 this.Invoke(set);
             }
             else
-            {
-                txtBaudRateUSB.AppendText($"Bits por segundo {packTotalSizeUSB}");
+            {             
+                string logUSB = $"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {packTotalSizeUSB}";
+                string logUART = $"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}:{DateTime.Now.Millisecond} - {packTotalSizeUART}";
+
+                txtBaudRateUSB.AppendText(logUSB);
                 txtBaudRateUSB.AppendText("\n");
-                packTotalSizeUSB = 0;
-                txtBaudRateUART.AppendText($"Bits por segundo {packTotalSizeUART}");
+               
+                txtBaudRateUART.AppendText(logUART);
                 txtBaudRateUART.AppendText("\n");
+
+                packTotalSizeUSB = 0;
                 packTotalSizeUART = 0;
             }
         }
@@ -78,7 +77,10 @@ namespace TestConnect
             byte[] bytes = ascii.GetBytes(new[] { (char)3 });
 
             portLeft = new SerialPort("COM5", 115200, Parity.None, 8, StopBits.One);
-            portLeft.DataReceived += PortLeft_DataReceived;
+            portLeft.DtrEnable = true;
+            //portLeft.RtsEnable = true;
+            //portLeft.Handshake = Handshake.None;
+            portLeft.DataReceived += PortLeft_DataReceived;            
             if (!portLeft.IsOpen)
             {
                 portLeft.Open();
@@ -103,8 +105,8 @@ namespace TestConnect
         }
 
         private void PortRight_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {            
-            this.SetTextRight(portRight.ReadExisting());                      
+        {
+            this.SetTextRight(portRight.ReadLine());
         }
 
         private void SetTextRight(string data)
@@ -128,8 +130,8 @@ namespace TestConnect
 
         private void PortLeft_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            
-            this.SetTextLeft(portLeft.ReadExisting());            
+
+            this.SetTextLeft(portLeft.ReadLine());
         }
 
         public void SetTextLeft(string data)
@@ -169,7 +171,7 @@ namespace TestConnect
             {
                 if (chkLeft.Checked)
                 {
-                    if (portLeft.IsOpen)
+                    if (portLeft != null && portLeft.IsOpen)
                     {
                         lblLeftConnect.Text = "Connected";
                     }
@@ -189,9 +191,9 @@ namespace TestConnect
                 }
                 if (chkRight.Checked)
                 {
-                    if (portRight.IsOpen)
+                    if (portRight != null && portRight.IsOpen)
                     {
-                        lblRightConnect.Text = "Connected desd";
+                        lblRightConnect.Text = "Connected";
                     }
                     else
                     {
@@ -231,8 +233,8 @@ namespace TestConnect
         {
             try
             {
-                System.Threading.Thread CloseDown = new System.Threading.Thread(new System.Threading.ThreadStart(CloseSerialPortLeft)); 
-                CloseDown.Start(); 
+                System.Threading.Thread CloseDown = new System.Threading.Thread(new System.Threading.ThreadStart(CloseSerialPortLeft));
+                CloseDown.Start();
             }
             catch (Exception ex)
             {
@@ -291,6 +293,8 @@ namespace TestConnect
             {
                 MessageBox.Show(ex.Message);
             }
-        }
+        }       
     }
 }
+
+

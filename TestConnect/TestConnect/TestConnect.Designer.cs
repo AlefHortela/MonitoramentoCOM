@@ -34,6 +34,7 @@
             this.txtBaudRateUART = new System.Windows.Forms.TextBox();
             this.txtBaudRateUSB = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chkDataUSB = new System.Windows.Forms.CheckBox();
             this.chkLeft = new System.Windows.Forms.CheckBox();
             this.btnStopLeft = new System.Windows.Forms.Button();
             this.btnStartLeft = new System.Windows.Forms.Button();
@@ -42,13 +43,12 @@
             this.txtRight = new System.Windows.Forms.TextBox();
             this.txtLeft = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.chkDataUART = new System.Windows.Forms.CheckBox();
             this.chkRight = new System.Windows.Forms.CheckBox();
             this.btnStopRight = new System.Windows.Forms.Button();
             this.lblRight = new System.Windows.Forms.Label();
             this.btnStartRight = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.chkDataUSB = new System.Windows.Forms.CheckBox();
-            this.chkDataUART = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -57,7 +57,7 @@
             // lblLeftConnect
             // 
             this.lblLeftConnect.AutoSize = true;
-            this.lblLeftConnect.Location = new System.Drawing.Point(205, 24);
+            this.lblLeftConnect.Location = new System.Drawing.Point(450, 15);
             this.lblLeftConnect.Name = "lblLeftConnect";
             this.lblLeftConnect.Size = new System.Drawing.Size(0, 13);
             this.lblLeftConnect.TabIndex = 6;
@@ -65,7 +65,7 @@
             // lblRightConnect
             // 
             this.lblRightConnect.AutoSize = true;
-            this.lblRightConnect.Location = new System.Drawing.Point(974, 24);
+            this.lblRightConnect.Location = new System.Drawing.Point(450, 15);
             this.lblRightConnect.Name = "lblRightConnect";
             this.lblRightConnect.Size = new System.Drawing.Size(0, 13);
             this.lblRightConnect.TabIndex = 7;
@@ -125,9 +125,21 @@
             this.panel1.Size = new System.Drawing.Size(605, 63);
             this.panel1.TabIndex = 9;
             // 
+            // chkDataUSB
+            // 
+            this.chkDataUSB.AutoSize = true;
+            this.chkDataUSB.Location = new System.Drawing.Point(310, 35);
+            this.chkDataUSB.Name = "chkDataUSB";
+            this.chkDataUSB.Size = new System.Drawing.Size(85, 17);
+            this.chkDataUSB.TabIndex = 12;
+            this.chkDataUSB.Text = "Plotar dados";
+            this.chkDataUSB.UseVisualStyleBackColor = true;
+            // 
             // chkLeft
             // 
             this.chkLeft.AutoSize = true;
+            this.chkLeft.Checked = true;
+            this.chkLeft.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkLeft.Location = new System.Drawing.Point(215, 35);
             this.chkLeft.Name = "chkLeft";
             this.chkLeft.Size = new System.Drawing.Size(88, 17);
@@ -196,6 +208,7 @@
             // 
             this.panel2.Controls.Add(this.chkDataUART);
             this.panel2.Controls.Add(this.chkRight);
+            this.panel2.Controls.Add(this.lblRightConnect);
             this.panel2.Controls.Add(this.btnStopRight);
             this.panel2.Controls.Add(this.lblRight);
             this.panel2.Controls.Add(this.btnStartRight);
@@ -206,9 +219,21 @@
             this.panel2.Size = new System.Drawing.Size(606, 63);
             this.panel2.TabIndex = 10;
             // 
+            // chkDataUART
+            // 
+            this.chkDataUART.AutoSize = true;
+            this.chkDataUART.Location = new System.Drawing.Point(310, 35);
+            this.chkDataUART.Name = "chkDataUART";
+            this.chkDataUART.Size = new System.Drawing.Size(85, 17);
+            this.chkDataUART.TabIndex = 13;
+            this.chkDataUART.Text = "Plotar dados";
+            this.chkDataUART.UseVisualStyleBackColor = true;
+            // 
             // chkRight
             // 
             this.chkRight.AutoSize = true;
+            this.chkRight.Checked = true;
+            this.chkRight.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkRight.Location = new System.Drawing.Point(215, 35);
             this.chkRight.Name = "chkRight";
             this.chkRight.Size = new System.Drawing.Size(88, 17);
@@ -254,34 +279,13 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "COM 3";
             // 
-            // chkDataUSB
-            // 
-            this.chkDataUSB.AutoSize = true;
-            this.chkDataUSB.Location = new System.Drawing.Point(310, 35);
-            this.chkDataUSB.Name = "chkDataUSB";
-            this.chkDataUSB.Size = new System.Drawing.Size(85, 17);
-            this.chkDataUSB.TabIndex = 12;
-            this.chkDataUSB.Text = "Plotar dados";
-            this.chkDataUSB.UseVisualStyleBackColor = true;
-            // 
-            // chkDataUART
-            // 
-            this.chkDataUART.AutoSize = true;
-            this.chkDataUART.Location = new System.Drawing.Point(310, 35);
-            this.chkDataUART.Name = "chkDataUART";
-            this.chkDataUART.Size = new System.Drawing.Size(85, 17);
-            this.chkDataUART.TabIndex = 13;
-            this.chkDataUART.Text = "Plotar dados";
-            this.chkDataUART.UseVisualStyleBackColor = true;
-            // 
             // TestConnect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1223, 544);
-            this.Controls.Add(this.tableLayoutPanel1);
-            this.Controls.Add(this.lblRightConnect);
             this.Controls.Add(this.lblLeftConnect);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.MinimizeBox = false;
             this.Name = "TestConnect";
             this.Text = "TestConnect";
